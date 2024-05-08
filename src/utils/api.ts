@@ -1,5 +1,5 @@
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '@config/firebase';
 import { DataListProps } from 'types/index';
 
 export const getData = async () => {
