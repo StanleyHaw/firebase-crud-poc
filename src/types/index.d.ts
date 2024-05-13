@@ -1,4 +1,4 @@
-type DataListProps = {
+type Data = {
   id: string;
   name: string;
   age: number;
@@ -6,4 +6,10 @@ type DataListProps = {
   country: string;
 };
 
-export { DataListProps };
+type Country = {
+  name: {
+    common: string;
+  };
+};
+
+export { Data, Country };
