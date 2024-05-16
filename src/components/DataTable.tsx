@@ -118,7 +118,7 @@ function DataTable({ dataList = [], onDeleteData, onSubmitEditedData }: DataTabl
               id: id,
               name: name,
               age: age,
-              gender: gender, //HACK: value is not rendered when editing
+              gender: gender,
               country: country
             };
 
