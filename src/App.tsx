@@ -80,7 +80,16 @@ function App() {
 
   return (
     <div className="container mx-auto py-8 space-y-4">
-      <AddDialog defaultValues={emptyValues} onSubmitData={handleAddUser} />
+      <div className="flex flex-row justify-between items-center gap-4">
+        <div className="">
+          <h1 className="text-4xl font-bold">Firebase CRUD poc</h1>
+          <p className="text-gray-400 font-light">
+            This project utilizes <span className="text-pink-600">React Hook Form</span> in conjunction with{' '}
+            <span className="text-black">Shadcn UI</span>.
+          </p>
+        </div>
+        <AddDialog defaultValues={emptyValues} onSubmitData={handleAddUser} />
+      </div>
       <DataTable dataList={dataList} onSubmitEditedData={handleEditUser} onDeleteData={handleDelete} />
     </div>
   );
