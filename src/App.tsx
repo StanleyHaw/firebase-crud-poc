@@ -11,7 +11,7 @@ import {
 import DataTable from '@components/DataTable';
 import ProfileForm from '@components/ui/ProfileForm';
 import { Data } from '@/types';
-import { getData } from '@utils/api';
+import { getData, addNewData } from '@utils/api';
 import { genderList } from './utils/constant';
 
 type AddDialog = {
@@ -66,8 +66,10 @@ function App() {
     fetchData();
   }, []);
 
-  const handleAddUser = (data: Data) => {
-    console.log(data, 'added');
+  const handleAddUser = async (newData: Data) => {
+    const result = [...(dataList as Data[]), newData];
+    setDataList(result);
+    await addNewData(newData);
   };
 
   const handleEditUser = (data: Data) => {
