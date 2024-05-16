@@ -1,13 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@components/ui/Button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@components/ui/Dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@components/ui/Input';
 import { Label } from '@components/ui/Label';
@@ -16,18 +7,35 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/RadioGroup';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Country } from '@/types';
+import { Data, Country } from '@/types';
+import { genderList } from '@/utils/constant';
 import { getCountryList } from '@/utils/countryApi';
+import { Button } from '@components/ui/Button';
 
 type ProfileForm = {
+  defaultValues: Data;
+  onSubmitData: (values: Data) => void;
   onSubmitSuccess: (isSuccessful: boolean) => void;
 };
 
-function ProfileForm({ onSubmitSuccess }: ProfileForm) {
+function ProfileForm({ defaultValues, onSubmitData, onSubmitSuccess }: ProfileForm) {
   const [countryList, setCountryList] = useState<Country[]>([]);
-  const genderList = ['male', 'female'];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getCountryList();
+        setCountryList(data);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const formSchema = z.object({
+    id: z.string(),
     name: z.string().min(1, {
       message: 'Name cannot be blank'
     }),
@@ -43,12 +51,7 @@ function ProfileForm({ onSubmitSuccess }: ProfileForm) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      age: 0,
-      gender: genderList[0],
-      country: ''
-    }
+    defaultValues: defaultValues
   });
 
   const {
@@ -57,22 +60,9 @@ function ProfileForm({ onSubmitSuccess }: ProfileForm) {
     formState: { isSubmitSuccessful, errors }
   } = form;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getCountryList();
-        setCountryList(data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     onSubmitSuccess(isSubmitSuccessful);
-    console.log(values);
+    onSubmitData(values);
   }
 
   return (
@@ -144,7 +134,7 @@ function ProfileForm({ onSubmitSuccess }: ProfileForm) {
             <FormItem className="grid grid-cols-4 items-center">
               <FormLabel className="row-span-2">Country</FormLabel>
               <FormControl>
-                <Select {...field} onValueChange={field.onChange}>
+                <Select value={field.value} name={field.name} onValueChange={field.onChange}>
                   <SelectTrigger className="w-[240px]">
                     <SelectValue placeholder="--Select your country--" />
                   </SelectTrigger>
@@ -167,7 +157,7 @@ function ProfileForm({ onSubmitSuccess }: ProfileForm) {
             </FormItem>
           )}
         />
-        <Button className="px-8 py-4 mt-4  text-white bg-indigo-600 hover:text-white hover:bg-indigo-700" type="submit">
+        <Button className="px-8 py-4 mt-4 text-white bg-indigo-600 hover:text-white hover:bg-indigo-700" type="submit">
           Submit
         </Button>
       </form>
@@ -175,32 +165,4 @@ function ProfileForm({ onSubmitSuccess }: ProfileForm) {
   );
 }
 
-function FormDialog() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleFormSubmit = (isSuccessful: boolean) => {
-    setIsOpen(isSuccessful);
-  };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="w-[calc(180px)] text-white bg-indigo-600 hover:text-white hover:bg-indigo-700"
-        >
-          Add User
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add new user</DialogTitle>
-          <DialogDescription>Please fill in the following information. Once completed, press Submit.</DialogDescription>
-        </DialogHeader>
-        <ProfileForm onSubmitSuccess={handleFormSubmit} />
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-export default FormDialog;
+export default ProfileForm;
