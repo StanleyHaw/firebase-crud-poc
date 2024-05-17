@@ -1,5 +1,5 @@
 import { collection, getDocs } from 'firebase/firestore';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@config/firebase';
 import { Data } from 'types/index';
 import { v4 as uuidv4 } from 'uuid';
@@ -22,5 +22,22 @@ export const addNewData = async (newData: Data) => {
     await setDoc(docRef, result);
   } catch (error) {
     console.error('Failed to add data: ', error);
+  }
+};
+
+export const updateData = async (data: Data) => {
+  try {
+    const docRef = doc(db, 'UserData', data.id);
+    return await setDoc(docRef, data);
+  } catch (error) {
+    console.error('Failed to update data: ', error);
+  }
+};
+
+export const deleteData = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, 'UserData', id));
+  } catch (error) {
+    console.error('Failed to delete data: ', error);
   }
 };
