@@ -11,7 +11,7 @@ import {
 import DataTable from '@components/DataTable';
 import ProfileForm from '@components/ui/ProfileForm';
 import { Data } from '@/types';
-import { getData } from '@utils/api';
+import { getData, addNewData, deleteData, updateData } from '@utils/api';
 import { genderList } from './utils/constant';
 
 type AddDialog = {
@@ -66,16 +66,20 @@ function App() {
     fetchData();
   }, []);
 
-  const handleAddUser = (data: Data) => {
-    console.log(data, 'added');
+  const handleAddUser = async (newData: Data) => {
+    const result = [...(dataList as Data[]), newData];
+    setDataList(result);
+    await addNewData(newData);
   };
 
-  const handleEditUser = (data: Data) => {
-    console.log(data, 'edited');
+  const handleEditUser = async (updatedData: Data) => {
+    setDataList((prev) => prev?.map((data) => (data.id === updatedData.id ? updatedData : data)));
+    await updateData(updatedData);
   };
 
-  const handleDelete = (id: string) => {
-    console.log(id, 'deleted');
+  const handleDelete = async (id: string) => {
+    setDataList((prev) => prev?.filter((data) => id !== data.id));
+    await deleteData(id);
   };
 
   return (
