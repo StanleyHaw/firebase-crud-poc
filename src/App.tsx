@@ -13,6 +13,7 @@ import ProfileForm from '@components/ui/ProfileForm';
 import { Data } from '@/types';
 import { getData, addNewData, deleteData, updateData } from '@utils/api';
 import { genderList } from './utils/constant';
+import { v4 as uuidv4 } from 'uuid';
 
 type AddDialog = {
   defaultValues: Data;
@@ -67,9 +68,10 @@ function App() {
   }, []);
 
   const handleAddUser = async (newData: Data) => {
-    const result = [...(dataList as Data[]), newData];
-    setDataList(result);
-    await addNewData(newData);
+    const newDataId = uuidv4().split('-')[0];
+    const newDataWithId = { ...newData, id: newDataId };
+    setDataList((prev) => [...(prev || []), newDataWithId]);
+    await addNewData(newDataWithId);
   };
 
   const handleEditUser = async (updatedData: Data) => {

@@ -2,7 +2,6 @@ import { collection, getDocs } from 'firebase/firestore';
 import { setDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@config/firebase';
 import { Data } from 'types/index';
-import { v4 as uuidv4 } from 'uuid';
 
 export const getData = async () => {
   try {
@@ -16,28 +15,30 @@ export const getData = async () => {
 
 export const addNewData = async (newData: Data) => {
   try {
-    const newDataId = uuidv4().split('-')[0];
-    const result = { ...newData, id: newDataId };
-    const docRef = doc(db, 'UserData', newDataId);
-    await setDoc(docRef, result);
+    const docRef = doc(db, 'UserData', newData.id);
+    await setDoc(docRef, newData);
   } catch (error) {
     console.error('Failed to add data: ', error);
+    throw new Error('Failed to add data');
   }
 };
 
 export const updateData = async (data: Data) => {
   try {
     const docRef = doc(db, 'UserData', data.id);
-    return await setDoc(docRef, data);
+    await setDoc(docRef, data, { merge: true });
   } catch (error) {
     console.error('Failed to update data: ', error);
+    throw new Error('Failed to update data');
   }
 };
 
 export const deleteData = async (id: string) => {
   try {
-    await deleteDoc(doc(db, 'UserData', id));
+    const docRef = doc(db, 'UserData', id);
+    await deleteDoc(docRef);
   } catch (error) {
     console.error('Failed to delete data: ', error);
+    throw new Error('Failed to delete data');
   }
 };
