@@ -13,12 +13,13 @@ import { getCountryList } from '@/utils/countryApi';
 import { Button } from '@components/ui/Button';
 
 type ProfileForm = {
+  submitButtonContext: string;
   defaultValues: Data;
-  onSubmitData: (values: Data) => void;
+  onSubmitData: (data: Data) => void;
   onSubmitSuccess: (isSuccessful: boolean) => void;
 };
 
-function ProfileForm({ defaultValues, onSubmitData, onSubmitSuccess }: ProfileForm) {
+function ProfileForm({ submitButtonContext, defaultValues, onSubmitData, onSubmitSuccess }: ProfileForm) {
   const [countryList, setCountryList] = useState<Country[]>([]);
 
   useEffect(() => {
@@ -60,9 +61,9 @@ function ProfileForm({ defaultValues, onSubmitData, onSubmitSuccess }: ProfileFo
     formState: { isSubmitSuccessful, errors }
   } = form;
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(data: z.infer<typeof formSchema>) {
     onSubmitSuccess(isSubmitSuccessful);
-    onSubmitData(values);
+    onSubmitData(data);
   }
 
   return (
@@ -158,7 +159,7 @@ function ProfileForm({ defaultValues, onSubmitData, onSubmitSuccess }: ProfileFo
           )}
         />
         <Button className="px-8 py-4 mt-4 text-white bg-indigo-600 hover:text-white hover:bg-indigo-700" type="submit">
-          Submit
+          {submitButtonContext}
         </Button>
       </form>
     </Form>
