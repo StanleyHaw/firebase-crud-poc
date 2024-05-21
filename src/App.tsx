@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@components/ui/Dialog';
+import { Skeleton } from '@components/ui/Skeleton';
 import { Toaster, toast } from 'sonner';
 import DataTable from '@components/DataTable';
 import ProfileForm from '@components/ui/ProfileForm';
@@ -65,6 +66,7 @@ type ToastMessage = {
 
 function App() {
   const [dataList, setDataList] = useState<Data[] | undefined>([]);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   const emptyValues = {
     id: '',
     name: '',
@@ -75,7 +77,9 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoadingData(true);
       const data: Data[] | undefined = await getData();
+      setIsLoadingData(false);
       setDataList(data);
     };
 
@@ -136,7 +140,33 @@ function App() {
           </div>
           <AddDialog defaultValues={emptyValues} onSubmitData={handleAddUser} />
         </div>
-        <DataTable dataList={dataList} onSubmitEditedData={handleEditUser} onDeleteData={handleDelete} />
+        {isLoadingData && (
+          <>
+            <div className="grid grid-cols-[1fr_1fr_3fr] gap-4">
+              <Skeleton className="w-[85%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[80%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[80%] h-[50px] rounded-1/2 ml-auto" />
+            </div>
+            <div className="grid grid-cols-[1fr_1fr_3fr] gap-4">
+              <Skeleton className="w-[100%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[60%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[80%] h-[50px] rounded-1/2 ml-auto" />
+            </div>
+            <div className="grid grid-cols-[1fr_1fr_3fr] gap-4">
+              <Skeleton className="w-[60%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[80%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[80%] h-[50px] rounded-1/2 ml-auto" />
+            </div>
+            <div className="grid grid-cols-[1fr_1fr_3fr] gap-4">
+              <Skeleton className="w-[75%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[100%] h-[50px] rounded-1/2" />
+              <Skeleton className="w-[80%] h-[50px] rounded-1/2 ml-auto" />
+            </div>
+          </>
+        )}
+        {!isLoadingData && dataList && (
+          <DataTable dataList={dataList} onSubmitEditedData={handleEditUser} onDeleteData={handleDelete} />
+        )}
       </div>
       <Toaster richColors />
     </>
