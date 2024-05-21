@@ -47,7 +47,12 @@ function EditDialog({ defaultValues, onSubmitData }: EditDialog) {
           <DialogTitle>Add new user</DialogTitle>
           <DialogDescription>Please fill in the following information. Once completed, press Submit.</DialogDescription>
         </DialogHeader>
-        <ProfileForm defaultValues={defaultValues} onSubmitData={onSubmitData} onSubmitSuccess={handleFormSubmit} />
+        <ProfileForm
+          submitButtonContext="Save"
+          defaultValues={defaultValues}
+          onSubmitData={onSubmitData}
+          onSubmitSuccess={handleFormSubmit}
+        />
       </DialogContent>
     </Dialog>
   );

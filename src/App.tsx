@@ -8,12 +8,17 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@components/ui/Dialog';
+import { Toaster, toast } from 'sonner';
 import DataTable from '@components/DataTable';
 import ProfileForm from '@components/ui/ProfileForm';
 import { Data } from '@/types';
 import { getData, addNewData, deleteData, updateData } from '@utils/api';
 import { genderList } from './utils/constant';
 import { v4 as uuidv4 } from 'uuid';
+
+const LOADING_TIME = 1000;
+
+const promise = () => new Promise<void>((resolve) => setTimeout(() => resolve(), LOADING_TIME));
 
 type AddDialog = {
   defaultValues: Data;
@@ -42,11 +47,21 @@ function AddDialog({ defaultValues, onSubmitData }: AddDialog) {
           <DialogTitle>Add new user</DialogTitle>
           <DialogDescription>Please fill in the following information. Once completed, press Submit.</DialogDescription>
         </DialogHeader>
-        <ProfileForm defaultValues={defaultValues} onSubmitData={onSubmitData} onSubmitSuccess={handleFormSubmit} />
+        <ProfileForm
+          submitButtonContext="Submit"
+          defaultValues={defaultValues}
+          onSubmitData={onSubmitData}
+          onSubmitSuccess={handleFormSubmit}
+        />
       </DialogContent>
     </Dialog>
   );
 }
+
+type ToastMessage = {
+  action: 'add' | 'edit' | 'delete';
+  name?: string;
+};
 
 function App() {
   const [dataList, setDataList] = useState<Data[] | undefined>([]);
@@ -67,37 +82,64 @@ function App() {
     fetchData();
   }, []);
 
+  function handleToastMessage({ action, name }: ToastMessage) {
+    const successMessage = {
+      add: `${name} has been added`,
+      edit: 'Edited successfully',
+      delete: 'deleted successfully'
+    }[action];
+
+    toast.promise(promise, {
+      loading: 'Loading...',
+      success: successMessage,
+      error: 'Error occurred, please Try again.',
+      className: 'text-gray-500'
+    });
+  }
+
   const handleAddUser = async (newData: Data) => {
     const newDataId = uuidv4().split('-')[0];
     const newDataWithId = { ...newData, id: newDataId };
-    setDataList((prev) => [...(prev || []), newDataWithId]);
+    handleToastMessage({ action: 'add', name: newData.name });
+    setTimeout(() => {
+      setDataList((prev) => [...(prev || []), newDataWithId]);
+    }, LOADING_TIME);
     await addNewData(newDataWithId);
   };
 
   const handleEditUser = async (updatedData: Data) => {
-    setDataList((prev) => prev?.map((data) => (data.id === updatedData.id ? updatedData : data)));
+    handleToastMessage({ action: 'edit' });
+    setTimeout(() => {
+      setDataList((prev) => prev?.map((data) => (data.id === updatedData.id ? updatedData : data)));
+    }, LOADING_TIME);
     await updateData(updatedData);
   };
 
   const handleDelete = async (id: string) => {
-    setDataList((prev) => prev?.filter((data) => id !== data.id));
+    handleToastMessage({ action: 'delete' });
+    setTimeout(() => {
+      setDataList((prev) => prev?.filter((data) => id !== data.id));
+    }, LOADING_TIME);
     await deleteData(id);
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-4">
-      <div className="flex flex-row justify-between items-center gap-4">
-        <div className="">
-          <h1 className="text-4xl font-bold">Firebase CRUD poc</h1>
-          <p className="text-gray-400 font-light">
-            This project utilizes <span className="text-pink-600">React Hook Form</span> in conjunction with{' '}
-            <span className="text-black">Shadcn UI</span>.
-          </p>
+    <>
+      <div className="container mx-auto py-8 space-y-4">
+        <div className="flex flex-row justify-between items-center gap-4">
+          <div className="">
+            <h1 className="text-4xl font-bold">Firebase CRUD poc</h1>
+            <p className="text-gray-400 font-light">
+              This project utilizes <span className="text-pink-600">React Hook Form</span> in conjunction with{' '}
+              <span className="text-black">Shadcn UI</span> and <span className="text-black">Sonner Toaster</span>.
+            </p>
+          </div>
+          <AddDialog defaultValues={emptyValues} onSubmitData={handleAddUser} />
         </div>
-        <AddDialog defaultValues={emptyValues} onSubmitData={handleAddUser} />
+        <DataTable dataList={dataList} onSubmitEditedData={handleEditUser} onDeleteData={handleDelete} />
       </div>
-      <DataTable dataList={dataList} onSubmitEditedData={handleEditUser} onDeleteData={handleDelete} />
-    </div>
+      <Toaster richColors />
+    </>
   );
 }
 
