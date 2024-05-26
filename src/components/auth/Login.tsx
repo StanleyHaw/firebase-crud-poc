@@ -42,9 +42,14 @@ function LoginForm() {
     formState: { errors }
   } = form;
 
-  function onSubmit(data: z.infer<typeof authSchema>) {
-    handleLogin(data);
-    navigate('/dashboard');
+  async function onSubmit(data: z.infer<typeof authSchema>) {
+    const isValidAccount = await handleLogin(data);
+
+    if (isValidAccount) {
+      navigate('/dashboard');
+    } else {
+      alert('invalid account, please try again');
+    }
   }
 
   return (

@@ -54,9 +54,15 @@ function SignUpForm() {
     formState: { errors }
   } = form;
 
-  function onSubmit(data: z.infer<typeof signUpSchema>) {
-    handleSignUp(data);
-    navigate('/login');
+  async function onSubmit(data: z.infer<typeof signUpSchema>) {
+    const isBrandNewAccount = await handleSignUp(data);
+
+    if (isBrandNewAccount) {
+      alert('sign in successful!');
+      navigate('/login');
+    } else {
+      alert('this E-mail is already registered. Please try again');
+    }
   }
 
   return (
