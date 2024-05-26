@@ -11,13 +11,25 @@ import { authSchema, signUpSchema } from '@utils/constant';
 type AuthRequest = z.infer<typeof authSchema>;
 
 async function handleLogin({ email, password }: AuthRequest) {
-  return await signInWithEmailAndPassword(auth, email, password);
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    return true;
+  } catch (error) {
+    console.error('failed to Login', error);
+    return false;
+  }
 }
 
 type SignUpRequest = z.infer<typeof signUpSchema>;
 
 async function handleSignUp({ email, password }: SignUpRequest) {
-  return await createUserWithEmailAndPassword(auth, email, password);
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    return true;
+  } catch (error) {
+    console.error('failed to Login', error);
+    return false;
+  }
 }
 
 async function handleSignInWithGoogle() {
