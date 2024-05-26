@@ -68,6 +68,18 @@
 
     --radius: 0.5rem;
   }
+
+  .form-input-label {
+    @apply absolute bg-white text-gray-400 font-light duration-200 px-1 pb-0.5 mx-2 focus:text-indigo-600 z-[1];
+  }
+
+  .form-input-typing {
+    @apply bg-transparent text-base mt-[1.3125rem] ml-2 cursor-text;
+  }
+
+  .errors-message {
+    @apply absolute top-11 font-light text-xs;
+  }
 }
 
 @layer base {
