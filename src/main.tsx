@@ -1,14 +1,20 @@
 import ReactDOM from 'react-dom/client';
 import HomePage from '@/pages/HomePage';
+import Dashboard from '@/pages/Dashboard';
 import LoginPage from '@/pages/LoginPage';
+import SignUpPage from '@/pages/SignUpPage';
+import { AuthProvider } from './contexts/authContext';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
-import SignUpPage from '@/pages/SignUpPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <HomePage />
+  },
+  {
+    path: '/dashboard',
+    element: <Dashboard />
   },
   {
     path: '/login',
@@ -20,4 +26,8 @@ const router = createBrowserRouter([
   }
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<RouterProvider router={router} />);
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
+);

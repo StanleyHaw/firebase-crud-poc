@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { authSchema } from '@/utils/constant';
+import { handleLogin } from '@/config/auth';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button';
 import {
@@ -20,6 +22,8 @@ import { PasswordInput } from '@components/ui/PasswordInput';
 import { cn } from '@/lib/utils';
 
 function LoginForm() {
+  const navigate = useNavigate();
+
   const emptyValues = {
     email: '',
     password: ''
@@ -39,7 +43,8 @@ function LoginForm() {
   } = form;
 
   function onSubmit(data: z.infer<typeof authSchema>) {
-    console.log(data);
+    handleLogin(data);
+    navigate('/dashboard');
   }
 
   return (
