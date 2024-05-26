@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { signUpSchema } from '@utils/constant';
+import { handleSignUp } from '@/config/auth';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button';
 import { Calendar } from '@/components/ui/Calendar';
@@ -28,6 +30,8 @@ import { Checkbox } from '@/components/ui/Checkbox';
 import { cn } from '@/lib/utils';
 
 function SignUpForm() {
+  const navigate = useNavigate();
+
   const emptyValues = {
     username: '',
     email: '',
@@ -51,7 +55,8 @@ function SignUpForm() {
   } = form;
 
   function onSubmit(data: z.infer<typeof signUpSchema>) {
-    console.log(data);
+    handleSignUp(data);
+    navigate('/login');
   }
 
   return (
