@@ -6,6 +6,8 @@ import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useF
 import { cn } from '@/lib/utils';
 import { Label } from '@components/ui/Label';
 
+import { MdError } from 'react-icons/md';
+
 const Form = FormProvider;
 
 type FormFieldContextValue<
@@ -112,13 +114,20 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
   ({ className, children, ...props }, ref) => {
     const { error, formMessageId } = useFormField();
     const body = error ? String(error?.message) : children;
+    const icon = error ? <MdError /> : children;
 
     if (!body) {
       return null;
     }
 
     return (
-      <p ref={ref} id={formMessageId} className={cn('text-sm font-medium text-destructive', className)} {...props}>
+      <p
+        ref={ref}
+        id={formMessageId}
+        className={cn('flex flex-row gap-1 items-center text-sm font-medium text-destructive', className)}
+        {...props}
+      >
+        {icon}
         {body}
       </p>
     );
