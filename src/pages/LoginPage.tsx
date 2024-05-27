@@ -1,9 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Authorize } from '@/components/Authorize';
+import { useAuth } from '@/contexts/authContext';
 import LoginForm from '@components/auth/Login';
+import { useEffect } from 'react';
 
 function LoginPage() {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    currentUser && navigate('/dashboard');
+  }, [currentUser, navigate]);
+
   return (
     <Authorize title="Login">
       <LoginForm />

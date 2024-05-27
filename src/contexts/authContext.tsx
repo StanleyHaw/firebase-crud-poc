@@ -40,6 +40,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (user) {
       setCurrentUser(user);
       setUserLoggedIn(true);
+      console.log(user);
     } else {
       setCurrentUser(null);
       setUserLoggedIn(false);

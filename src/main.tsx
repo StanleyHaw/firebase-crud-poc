@@ -3,6 +3,7 @@ import HomePage from '@/pages/HomePage';
 import Dashboard from '@/pages/Dashboard';
 import LoginPage from '@/pages/LoginPage';
 import SignUpPage from '@/pages/SignUpPage';
+import ErrorPage from '@/pages/ErrorPage';
 import { AuthProvider } from './contexts/authContext';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
@@ -10,7 +11,8 @@ import './index.css';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />
+    element: <HomePage />,
+    errorElement: <ErrorPage />
   },
   {
     path: '/dashboard',

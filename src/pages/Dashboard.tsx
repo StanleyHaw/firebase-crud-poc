@@ -1,28 +1,29 @@
 import { useAuth } from '@/contexts/authContext';
-import { handleSignOut } from '@/config/auth';
 import { Link } from 'react-router-dom';
+import Navbar from '@/components/header/Navbar';
 
 function Dashboard() {
   const { currentUser } = useAuth();
 
-  const handleLogout = () => {
-    console.log('logout');
-    handleSignOut();
-  };
-
   return (
     <>
-      <div>Dashboard</div>
-      {currentUser ? (
-        <>
-          <div>Welcome {currentUser?.email}</div>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      ) : (
-        <div>
-          Please <Link to="/login">login</Link>
-        </div>
-      )}
+      <Navbar />
+      <div className="w-screen h-screen flex flex-col text-center items-center gap-4 pt-[15%]">
+        <h1 className="text-indigo-600 text-8xl font-black">Dashboard</h1>
+        {currentUser ? (
+          <h2 className="text-2xl">
+            Welcome{' '}
+            <span className="text-indigo-600">{currentUser?.email}</span>
+          </h2>
+        ) : (
+          <div>
+            Please{' '}
+            <Link to="/login" className="underline text-indigo-600">
+              login
+            </Link>
+          </div>
+        )}
+      </div>
     </>
   );
 }
