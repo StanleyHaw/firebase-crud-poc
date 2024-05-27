@@ -7,6 +7,7 @@ import {
 } from 'firebase/auth';
 import { z } from 'zod';
 import { authSchema, signUpSchema } from '@utils/constant';
+import { NavigateFunction } from 'react-router-dom';
 
 type AuthRequest = z.infer<typeof authSchema>;
 
@@ -32,9 +33,10 @@ async function handleSignUp({ email, password }: SignUpRequest) {
   }
 }
 
-async function handleSignInWithGoogle() {
+async function handleSignInWithGoogle(navigate: NavigateFunction) {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
+  navigate('/dashboard');
 
   return result;
 }

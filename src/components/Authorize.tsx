@@ -1,7 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Link } from 'react-router-dom';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/Card';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub, FaFacebook } from 'react-icons/fa';
+import { handleSignInWithGoogle } from '@/config/auth';
 
 type AuthorizeProps = {
   children: React.ReactNode;
@@ -9,6 +16,8 @@ type AuthorizeProps = {
 };
 
 export function Authorize({ children, title }: AuthorizeProps) {
+  const navigate = useNavigate();
+
   return (
     <Card className="mx-auto px-4 py-8 w-[500px] h-screen border-0 shadow-none">
       <CardHeader>
@@ -20,9 +29,9 @@ export function Authorize({ children, title }: AuthorizeProps) {
         <div className="mt-3 text-center text-sm text-gray-400">
           or you can sign in with
           <div className="flex flex-row justify-center gap-4 mt-2">
-            <Link to="#">
+            <button onClick={() => handleSignInWithGoogle(navigate)}>
               <FcGoogle />
-            </Link>{' '}
+            </button>
             <Link to="#">
               <FaGithub className="text-black" />
             </Link>{' '}
