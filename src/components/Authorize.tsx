@@ -1,3 +1,8 @@
+import { Link } from 'react-router-dom';
+import useToast from '@/hooks/useToast';
+import { handleSignInWithGoogle } from '@/config/auth';
+import { handleAuthSuccessMessage } from '@/utils/toastMessage';
+
 import {
   Card,
   CardContent,
@@ -5,10 +10,8 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/Card';
-import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub, FaFacebook } from 'react-icons/fa';
-import { handleSignInWithGoogle } from '@/config/auth';
 
 type AuthorizeProps = {
   children: React.ReactNode;
@@ -16,7 +19,16 @@ type AuthorizeProps = {
 };
 
 export function Authorize({ children, title }: AuthorizeProps) {
-  const navigate = useNavigate();
+  const { setLoading } = useToast();
+
+  async function signInWithGoogle() {
+    setLoading(true);
+    await handleSignInWithGoogle();
+    setTimeout(() => {
+      setLoading(false);
+      handleAuthSuccessMessage({ type: 'login' });
+    }, 1000);
+  }
 
   return (
     <Card className="mx-auto px-4 py-8 w-[500px] h-screen border-0 shadow-none">
@@ -29,7 +41,7 @@ export function Authorize({ children, title }: AuthorizeProps) {
         <div className="mt-3 text-center text-sm text-gray-400">
           or you can sign in with
           <div className="flex flex-row justify-center gap-4 mt-2">
-            <button onClick={() => handleSignInWithGoogle(navigate)}>
+            <button onClick={signInWithGoogle}>
               <FcGoogle />
             </button>
             <Link to="#">

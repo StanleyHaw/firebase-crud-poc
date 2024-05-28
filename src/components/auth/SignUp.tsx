@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { signUpSchema } from '@utils/constant';
 import { handleSignUp } from '@/config/auth';
 import { useNavigate } from 'react-router-dom';
+import { LoadingStateProps } from '@/types';
 
 import { Button } from '@/components/ui/Button';
 import { Calendar } from '@/components/ui/Calendar';
@@ -28,9 +29,15 @@ import { FiCalendar } from 'react-icons/fi';
 import { Checkbox } from '@/components/ui/Checkbox';
 
 import { cn } from '@/lib/utils';
+import {
+  handleAuthErrorMessage,
+  handleAuthSuccessMessage
+} from '@/utils/toastMessage';
+import useToast from '@/hooks/useToast';
 
 function SignUpForm() {
   const navigate = useNavigate();
+  const { setLoading } = useToast();
 
   const emptyValues = {
     username: '',
@@ -38,7 +45,7 @@ function SignUpForm() {
     password: '',
     confirmPassword: '',
     dateOfBirth: undefined,
-    termsOfService: false
+    termsOfService: undefined
   };
 
   type SignUpFormSchema = z.infer<typeof signUpSchema>;
@@ -55,14 +62,17 @@ function SignUpForm() {
   } = form;
 
   async function onSubmit(data: z.infer<typeof signUpSchema>) {
-    const isBrandNewAccount = await handleSignUp(data);
+    setLoading(true);
 
+    const isBrandNewAccount = await handleSignUp(data);
     if (isBrandNewAccount) {
-      alert('sign in successful!');
-      navigate('/login');
+      navigate('/dashboard');
+      handleAuthSuccessMessage({ type: 'signUp' });
     } else {
-      alert('this E-mail is already registered. Please try again');
+      handleAuthErrorMessage({ type: 'signUp' });
     }
+
+    setLoading(false);
   }
 
   return (
