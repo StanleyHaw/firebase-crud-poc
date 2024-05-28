@@ -12,4 +12,4 @@ type Country = {
   };
 };
 
-export { Data, Country };
+export { Data, Country, LoadingStateProps };

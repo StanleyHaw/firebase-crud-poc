@@ -1,32 +1,26 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  ReactNode
-} from 'react';
+import { createContext, useState, useEffect, ReactNode } from 'react';
 import { auth } from '@/config/firebase';
 import { User, onAuthStateChanged } from '@firebase/auth';
 
 const initialValue = {
-  currentUser: null
+  currentUser: null,
+  userLoggedIn: false,
+  loading: true
 };
 
 type AuthContextProps = {
   currentUser: User | null;
+  userLoggedIn: boolean;
+  loading: boolean;
 };
 
 const AuthContext = createContext<AuthContextProps>(initialValue);
-
-export function useAuth() {
-  return useContext(AuthContext);
-}
 
 type AuthProviderProps = {
   children: ReactNode;
 };
 
-export function AuthProvider({ children }: AuthProviderProps) {
+function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -40,7 +34,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (user) {
       setCurrentUser(user);
       setUserLoggedIn(true);
-      console.log(user);
     } else {
       setCurrentUser(null);
       setUserLoggedIn(false);
@@ -60,3 +53,5 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
+
+export { AuthContext, AuthProvider };

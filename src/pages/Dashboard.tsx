@@ -1,9 +1,14 @@
-import { useAuth } from '@/contexts/authContext';
 import { Link } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import useAuth from '@/hooks/useAuth';
+import useToast from '@/hooks/useToast';
+
+import Loading from '@/components/Loading';
 import Navbar from '@/components/header/Navbar';
 
 function Dashboard() {
   const { currentUser } = useAuth();
+  const { loading } = useToast();
 
   return (
     <>
@@ -24,6 +29,8 @@ function Dashboard() {
           </div>
         )}
       </div>
+      <Toaster richColors />
+      {loading && <Loading />}
     </>
   );
 }
